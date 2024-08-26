@@ -14,7 +14,7 @@ const telegramRoutes = require("./routes/telegramRoutes");
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 // app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 

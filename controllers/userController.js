@@ -33,21 +33,24 @@ exports.verifyUser = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.fetchUser = asyncErrorHandler(async (req, res, next) => {
-  const { username } = req.params;
-  const user = await User.findOne({ username });
+  // const { username } = req.params;
+  // const user = await User.findOne({ username });
 
-  if (user) {
-    const now = new Date();
-    let timeSpent = Math.floor(now.getTime() / 1000) - user.currentEnergyTime;
-    timeSpent = timeSpent * user.velocity + user.currentEnergy;
-    const energyRecharged = Math.min(timeSpent, user.energy_limit);
+  // if (user) {
+  //   const now = new Date();
+  //   let timeSpent = Math.floor(now.getTime() / 1000) - user.currentEnergyTime;
+  //   timeSpent = timeSpent * user.velocity + user.currentEnergy;
+  //   const energyRecharged = Math.min(timeSpent, user.energy_limit);
 
-    return res.status(200).json({
-      ...user._doc,
-      currentEnergy: energyRecharged,
-    });
-  }
-  return next(new CustomError("Invalid credentials", 400));
+  //   return res.status(200).json({
+  //     ...user._doc,
+  //     currentEnergy: energyRecharged,
+  //   });
+  // }
+  // return next(new CustomError("Invalid credentials", 400));
+  res.status(200).json({
+    message: "Api Route working!",
+  });
 });
 
 exports.savePoints = asyncErrorHandler(async (req, res, next) => {
