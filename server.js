@@ -41,6 +41,17 @@ if (process.env.NODE_ENV === "development") {
   app.use(cors({ origin: "*", credentials: true }));
 }
 
+if (process.env.NODE_ENV === "production") {
+  mongoose
+    .connect(process.env.LIVE_MONGO_URI)
+    .then(() => console.log("Database connected successfully"))
+    .catch((err) => console.log(err.message));
+
+  console.log("kelpie-production-mode");
+
+  app.use(cors({ origin: "*", credentials: true }));
+}
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
