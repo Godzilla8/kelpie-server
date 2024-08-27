@@ -56,7 +56,7 @@ exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
         }
       );
 
-      return res.status(200);
+      return res.status(200).json({ message: "new user" });
     }
     bot.sendMessage(
       chatId,
@@ -65,7 +65,7 @@ exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
         reply_markup: inlineKeyboard,
       }
     );
-    return res.status(200);
+    return res.status(200).json({ message: "existing user" });
   }
 });
 
