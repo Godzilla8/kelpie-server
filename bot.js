@@ -3,13 +3,15 @@ const asyncErrorHandler = require("./utils/asyncErrorHandler");
 const User = require("./models/user");
 const ShortUId = require("short-unique-id");
 require("dotenv").config();
+
 const bot = new TelegramBot(process.env.TELEGRAM_TOKEN);
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
   try {
     const { message } = req.body;
 
-    if (message && message.text.startsWith("/start ")) {
+    if (message && message.text.startsWith("/start")) {
+      console.log("out of conditional");
       const chatId = message.chat.id;
       const username = message.chat.username;
       const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
