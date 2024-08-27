@@ -2,17 +2,11 @@ const TelegramBot = require("node-telegram-bot-api");
 const asyncErrorHandler = require("./utils/asyncErrorHandler");
 const User = require("./models/user");
 const ShortUId = require("short-unique-id");
-const axios = require("axios");
 require("dotenv").config();
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
-  // res.status(200).json({ message: "Request received" });
-
+  res.status(200).json({ message: "Request received" });
   const { message } = req.body;
-
-  // const TELEGRAM_API_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}`;
-  // const responseText =
-  //   "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉";
 
   if (message && message.text.startsWith("/start ")) {
     const chatId = message.chat.id;
