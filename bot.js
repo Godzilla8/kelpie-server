@@ -6,7 +6,7 @@ const axios = require("axios");
 require("dotenv").config();
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
-  res.status(200).json({ message: "Request received" });
+  // res.status(200).json({ message: "Request received" });
 
   const { message } = req.body;
 
