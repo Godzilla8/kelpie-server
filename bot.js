@@ -3,69 +3,134 @@ const asyncErrorHandler = require("./utils/asyncErrorHandler");
 const User = require("./models/user");
 const ShortUId = require("short-unique-id");
 require("dotenv").config();
+const bot = new TelegramBot(process.env.TELEGRAM_TOKEN);
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
-  res.status(200).json({ message: "Request received" });
-  const { message } = req.body;
+  try {
+    const { message } = req.body;
 
-  if (message && message.text.startsWith("/start ")) {
-    const chatId = message.chat.id;
-    const username = message.chat.username;
-    const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
+    if (message && message.text.startsWith("/start ")) {
+      const chatId = message.chat.id;
+      const username = message.chat.username;
+      const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
 
-    const user = await User.findOne({ chatId });
-    const bot = new TelegramBot(process.env.TELEGRAM_TOKEN);
+      const user = await User.findOne({ chatId });
 
-    const inlineKeyboard = {
-      inline_keyboard: [
-        [{ text: "Open Kelpie App", web_app: { url: "https://kelpienetwork.com" } }],
-      ],
-    };
+      const inlineKeyboard = {
+        inline_keyboard: [
+          [{ text: "Open Kelpie App", web_app: { url: "https://kelpienetwork.com" } }],
+        ],
+      };
 
-    if (!user) {
-      const referrer = await User.findOne({ referralId: referCode });
+      if (!user) {
+        const referrer = await User.findOne({ referralId: referCode });
 
-      const createReferralId = new ShortUId({ length: 10 });
-      const referralId = createReferralId.rnd();
+        const createReferralId = new ShortUId({ length: 10 });
+        const referralId = createReferralId.rnd();
 
-      const newUser = new User({
-        username,
-        referralId,
-        referrerId: referCode,
-        chatId,
-      });
+        const newUser = new User({
+          username,
+          referralId,
+          referrerId: referCode,
+          chatId,
+        });
 
-      referrer.referralCount += 1;
-      await newUser.save();
-      await referrer.save();
-
-      console.log("User created!");
-      // Respond with a message and inline button
-
-      bot.sendMessage(
-        chatId,
-        "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
-        {
-          reply_markup: inlineKeyboard,
+        if (referrer) {
+          referrer.referralCount += 1;
+          await referrer.save();
         }
-      );
 
-      return;
+        await newUser.save();
 
-      // return res.status(200).json({ message: "new user" });
-    }
-    bot.sendMessage(
-      chatId,
-      "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲.\n\n We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
-      {
-        reply_markup: inlineKeyboard,
+        console.log("User created!");
+
+        bot.sendMessage(
+          chatId,
+          "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
+          {
+            reply_markup: inlineKeyboard,
+          }
+        );
+      } else {
+        bot.sendMessage(
+          chatId,
+          "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲.\n\n We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
+          {
+            reply_markup: inlineKeyboard,
+          }
+        );
       }
-    );
+    }
 
-    return;
-    // return res.status(200).json({ message: "existing user" });
+    // Send the response after processing
+    res.status(200).json({ message: "Request processed successfully" });
+  } catch (error) {
+    console.error("Error handling Telegram request:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
+//   res.status(200).json({ message: "Request received" });
+//   const { message } = req.body;
+
+//   if (message && message.text.startsWith("/start ")) {
+//     const chatId = message.chat.id;
+//     const username = message.chat.username;
+//     const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
+
+//     const user = await User.findOne({ chatId });
+
+//     const inlineKeyboard = {
+//       inline_keyboard: [
+//         [{ text: "Open Kelpie App", web_app: { url: "https://kelpienetwork.com" } }],
+//       ],
+//     };
+
+//     if (!user) {
+//       const referrer = await User.findOne({ referralId: referCode });
+
+//       const createReferralId = new ShortUId({ length: 10 });
+//       const referralId = createReferralId.rnd();
+
+//       const newUser = new User({
+//         username,
+//         referralId,
+//         referrerId: referCode,
+//         chatId,
+//       });
+
+//       referrer.referralCount += 1;
+//       await newUser.save();
+//       await referrer.save();
+
+//       console.log("User created!");
+//       // Respond with a message and inline button
+
+//       bot.sendMessage(
+//         chatId,
+//         "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
+//         {
+//           reply_markup: inlineKeyboard,
+//         }
+//       );
+
+//       return;
+
+//       // return res.status(200).json({ message: "new user" });
+//     }
+//     bot.sendMessage(
+//       chatId,
+//       "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲.\n\n We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
+//       {
+//         reply_markup: inlineKeyboard,
+//       }
+//     );
+
+//     return;
+//     // return res.status(200).json({ message: "existing user" });
+//   }
+// });
 
 // next();
 // const newUser = await User.create({ username });
