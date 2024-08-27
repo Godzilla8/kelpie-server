@@ -2,67 +2,83 @@ const TelegramBot = require("node-telegram-bot-api");
 const asyncErrorHandler = require("./utils/asyncErrorHandler");
 const User = require("./models/user");
 const ShortUId = require("short-unique-id");
+const axios = require("axios");
 require("dotenv").config();
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
-  // const { message } = req.body;
+  const { message } = req.body;
 
-  return res.status(200).json({
-    message: "User created",
-  });
+  // return res.status(200).json({
+  //   message: "User created",
+  // });
 
-  // if (message && message.text.startsWith("/start ")) {
-  //   const chatId = message.chat.id;
-  //   const username = message.chat.username;
-  //   const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
+  const TELEGRAM_API_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}`;
+  const responseText =
+    "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉";
 
-  //   const user = await User.findOne({ chatId });
-  //   const bot = new TelegramBot(process.env.TELEGRAM_TOKEN);
-  //   const inlineKeyboard = {
-  //     inline_keyboard: [
-  //       [{ text: "Open Kelpie App", web_app: { url: "https://kelpienetwork.com" } }],
-  //     ],
-  //   };
+  if (message && message.text.startsWith("/start ")) {
+    const chatId = message.chat.id;
+    const username = message.chat.username;
+    const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
 
-  //   if (!user) {
-  //     const referrer = await User.findOne({ referralId: referCode });
+    const user = await User.findOne({ chatId });
+    const bot = new TelegramBot(process.env.TELEGRAM_TOKEN);
+    const inlineKeyboard = {
+      inline_keyboard: [
+        [{ text: "Open Kelpie App", web_app: { url: "https://kelpienetwork.com" } }],
+      ],
+    };
 
-  //     const createReferralId = new ShortUId({ length: 10 });
-  //     const referralId = createReferralId.rnd();
+    if (!user) {
+      const referrer = await User.findOne({ referralId: referCode });
 
-  //     const newUser = new User({
-  //       username,
-  //       referralId,
-  //       referrerId: referCode,
-  //       chatId,
-  //     });
+      const createReferralId = new ShortUId({ length: 10 });
+      const referralId = createReferralId.rnd();
 
-  //     referrer.referralCount += 1;
-  //     await newUser.save();
-  //     await referrer.save();
+      const newUser = new User({
+        username,
+        referralId,
+        referrerId: referCode,
+        chatId,
+      });
 
-  //     console.log("User created!");
-  //     // Respond with a message and inline button
+      referrer.referralCount += 1;
+      await newUser.save();
+      await referrer.save();
 
-  //     bot.sendMessage(
-  //       chatId,
-  //       "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
-  //       {
-  //         reply_markup: inlineKeyboard,
-  //       }
-  //     );
+      console.log("User created!");
+      // Respond with a message and inline button
 
-  //     return res.status(200);
-  //   }
-  //   bot.sendMessage(
-  //     chatId,
-  //     "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲.\n\n We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
-  //     {
-  //       reply_markup: inlineKeyboard,
-  //     }
-  //   );
-  //   return res.status(200);
-  // }
+      // bot.sendMessage(
+      //   chatId,
+      //   "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲. We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
+      //   {
+      //     reply_markup: inlineKeyboard,
+      //   }
+      // );
+
+      await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
+        chat_id: chatId,
+        text: responseText,
+        reply_markup: inlineKeyboard,
+      });
+
+      return res.status(200);
+    }
+    // bot.sendMessage(
+    //   chatId,
+    //   "Collect rewards 🪙 on Kelpie Network by climbing 🪜 up the ranks, doing tasks and playing fun games 🎲.\n\n We are working on a whole new ecosystem 🚀🌍 and we are glad that you are part of it! 🤝🎉",
+    //   {
+    //     reply_markup: inlineKeyboard,
+    //   }
+    // );
+    await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
+      chat_id: chatId,
+      text: responseText,
+      reply_markup: inlineKeyboard,
+    });
+    return res.status(200);
+  }
 });
 
 // next();
