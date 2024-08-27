@@ -6,9 +6,7 @@ const axios = require("axios");
 require("dotenv").config();
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
-  res.status(200).json({
-    message: "Request received",
-  });
+  res.status(200).json({ message: "Request received" });
 
   const { message } = req.body;
 
@@ -22,7 +20,8 @@ exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
     const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
 
     const user = await User.findOne({ chatId });
-    const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
+    const bot = new TelegramBot(process.env.TELEGRAM_TOKEN);
+
     const inlineKeyboard = {
       inline_keyboard: [
         [{ text: "Open Kelpie App", web_app: { url: "https://kelpienetwork.com" } }],
