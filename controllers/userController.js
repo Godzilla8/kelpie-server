@@ -7,6 +7,11 @@ dotenv.config();
 
 exports.verifyUser = asyncErrorHandler(async (req, res, next) => {
   const { initData } = req.body;
+  if (!initData)
+    return res.status(403).json({
+      message: "Telegram data not found",
+    });
+
   const encoded = decodeURIComponent(initData);
   const secret = crypto.createHmac("sha256", "WebAppData").update(process.env.TELEGRAM_TOKEN);
 
