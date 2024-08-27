@@ -11,7 +11,6 @@ exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
     const { message } = req.body;
 
     if (message && message.text.startsWith("/start")) {
-      console.log("out of conditional");
       const chatId = message.chat.id;
       const username = message.chat.username;
       const referCode = message.text.split(" ")[1] || "PhMUEE1icc";
