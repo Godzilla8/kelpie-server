@@ -5,7 +5,7 @@ const ShortUId = require("short-unique-id");
 require("dotenv").config();
 
 exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
-  res.status(200).json({ message: "Request received" });
+  // res.status(200).json({ message: "Request received" });
   const { message } = req.body;
 
   if (message && message.text.startsWith("/start ")) {
