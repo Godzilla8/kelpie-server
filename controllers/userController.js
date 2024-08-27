@@ -33,7 +33,7 @@ exports.verifyUser = asyncErrorHandler(async (req, res, next) => {
   if (user) {
     return res.status(200).json({ user, isVerified: true });
   } else {
-    return res.status(200).json({ status: "failed", message: "User is not registered" });
+    return res.status(400).json({ status: "failed", message: "User is not registered" });
   }
 });
 
