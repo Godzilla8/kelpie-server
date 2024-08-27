@@ -23,7 +23,7 @@ exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
         ],
       };
 
-      if (!user) {
+      if (!user.username) {
         const referrer = await User.findOne({ referralId: referCode });
 
         const createReferralId = new ShortUId({ length: 10 });
