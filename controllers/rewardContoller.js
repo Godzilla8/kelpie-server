@@ -11,8 +11,8 @@ exports.fetchReward = asyncErrorHandler(async (req, res, next) => {
 
 // Boost Rewards Logic
 exports.boostReward = asyncErrorHandler(async (req, res, next) => {
-  const { username } = req.body;
-  const user = await User.findOne({ username });
+  const { chatId } = req.body;
+  const user = await User.findOne({ chatId });
   const BOOST_VALUE = 500;
 
   if (!user) return next(new CustomError("Invalid credentials", 400));
@@ -106,8 +106,8 @@ exports.boostReward = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.claimDailyReward = asyncErrorHandler(async (req, res) => {
-  const username = req.params.username;
-  const user = await User.findOne({ username });
+  const chatId = req.params.id;
+  const user = await User.findOne({ chatId });
   if (!user) return next(new CustomError("This user does not exist", 404));
 
   const dailyRewardValue = [
@@ -153,20 +153,20 @@ exports.claimDailyReward = asyncErrorHandler(async (req, res) => {
 });
 
 exports.updateUserRewards = asyncErrorHandler(async (req, res, next) => {
-  const { username, size } = req.body;
+  const { chatId, size } = req.body;
 
-  const setUser = await User.updateOne({ username }, { $inc: { total_reward: size } });
+  const setUser = await User.updateOne({ chatId }, { $inc: { total_reward: size } });
 
   res.status(200).json({ status: "success", message: "Reward added successfully!", user: setUser });
 });
 
 exports.claimTreasureChest = asyncErrorHandler(async (req, res, next) => {
-  const { username } = req.params;
+  const { id } = req.params;
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const user = await User.findOne({ username }).session(session);
+    const user = await User.findOne({ chatId: id }).session(session);
     if (!user) {
       await session.abortTransaction();
       session.endSession();

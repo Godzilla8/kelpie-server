@@ -12,8 +12,8 @@ const {
 router.get("/reward", fetchReward);
 router.post("/savepoints", savePoints);
 router.put("/boost", boostReward);
-router.put("/daily-reward/claim/:username", claimDailyReward);
+router.put("/daily-reward/claim/:id", claimDailyReward);
 router.post("/update-reward", updateUserRewards);
-router.put("/treasure-chest/claim/:username", claimTreasureChest);
+router.put("/treasure-chest/claim/:id", claimTreasureChest);
 
 module.exports = router;

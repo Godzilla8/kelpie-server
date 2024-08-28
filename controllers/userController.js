@@ -29,7 +29,7 @@ exports.verifyUser = asyncErrorHandler(async (req, res, next) => {
   if (hash !== _hash) {
     return res.status(400).json({ status: "failed", message: "Invalid data", isVerified: false });
   }
-  const user = await User.findOne({ username: userData.username });
+  const user = await User.findOne({ chatId: userData.id });
   if (user) {
     return res.status(200).json({ user, isVerified: true });
   } else {
@@ -38,8 +38,8 @@ exports.verifyUser = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.fetchUser = asyncErrorHandler(async (req, res, next) => {
-  const { username } = req.params;
-  const user = await User.findOne({ username });
+  const { id } = req.params;
+  const user = await User.findOne({ chatId: id });
 
   if (user) {
     const now = new Date();
@@ -56,8 +56,8 @@ exports.fetchUser = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.savePoints = asyncErrorHandler(async (req, res, next) => {
-  const { username, points, currentEnergy } = req.body;
-  const user = await User.findOne({ username });
+  const { chatId, points, currentEnergy } = req.body;
+  const user = await User.findOne({ chatId });
 
   if (!user) {
     return next(new CustomError("Invalid credentials", 400));

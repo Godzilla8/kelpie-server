@@ -9,7 +9,7 @@ const UserSchema = new Schema({
 
   referralCount: { type: Number, default: 0 },
 
-  username: { type: String, required: true, trim: true, unique: true },
+  username: { type: String, trim: true, unique: true },
 
   chatId: { type: String, unique: true },
 
