@@ -67,6 +67,6 @@ exports.createTelegramUser = asyncErrorHandler(async (req, res) => {
     res.status(200).json({ message: "Request processed successfully" });
   } catch (error) {
     console.error("Error handling Telegram request:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(200).json({ error: "There was a server error" });
   }
 });
